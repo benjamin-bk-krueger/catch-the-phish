@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} {{ student.student_name }} {% endblock %} ({% if student.student_role == "admin" %}<i class="bi bi-mortarboard"></i> Admin{% else %}User{% endif %})</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Here you can view the profile of the selected user.
+        </div>
+    </div>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show detailed information regarding the selected student #}
+        <div class="card mb-3" style="max-width: 720px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('do_display', username=folder_name, filename=student.student_img) if (student.student_img!='No Image') else url_for('static', filename='img/not_found.jpg') }}" class="img-fluid rounded-start" alt="Student Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text"><span style="white-space: pre-line">{{ student.student_desc }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {#  Display action buttons regarding the selected student #}
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+            {#  Same links implemented using small buttons #}
+            <div class="btn-group me-2" role="group" aria-label="Second group">
+                <a href="{{ url_for('show_students') }}" data-toggle="tooltip" title="All Students" class="btn btn-primary mt-4 mb-4"><i class="bi bi-list-ul"></i> All Students</a>
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Third group">
+                {%  if current_user.student_role == "admin" and student.active == 0 %}
+                    <a href="{{ url_for('show_approve_student', student_name=student.student_name) }}" data-toggle="tooltip" title="Approve Student" class="btn btn-primary mt-4 mb-4"><i class="bi bi-person-check"></i> Approve Student</a>
+                {%  endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

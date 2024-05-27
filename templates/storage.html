@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} S3 Storage area {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Here you can upload pictures or PDF documents. You can also manage files that have already been uploaded. Simply hold the mouse over the symbol to find out what it means or take a look at the help section.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable clipboard #}
+    <script src="{{ url_for('static', filename='js/func_clipboard.js') }}"></script>
+
+    {#  Enable modal window error handling #}
+    {%  if page_mode == "rename"  %}
+        <script src="{{ url_for('static', filename='js/func_modal.js') }}"></script>
+    {%  endif %}
+
+    {#  Enable storage magic #}
+    <script src="{{ url_for('static', filename='js/func_storage.js') }}"></script>
+    <script>
+        init_storage("{{ url_for('show_storage') }}", "{{ csrf_token() }}");
+    </script>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        {#  Javascript anchor and progress bar #}
+        <h4 class="mb-3">Upload your file here</h4>
+        <div class="card">
+            <div class="card-body">
+                You can paste and upload an image in the clipboard just by pressing ctrl+v on this page. You can use the traditional way below as well.
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="upload_progress" style="width: 1%" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+
+        {#  Traditional upload via file selection form #}
+        <form action="{{ url_for('show_storage') }}" method="POST" enctype=multipart/form-data>
+            {{ file_upload_form.csrf_token }}
+            <div class="form-group mt-2 mb-2">
+                {{ file_upload_form.file }}
+            </div>
+            {%  if page_mode == "upload"  %}
+                {% for error in file_upload_form.file.errors %}
+                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                {% endfor %}
+            {%  endif %}
+            {{ file_upload_form.page_mode(value="upload") }}
+
+            <button type="submit" class="btn btn-primary mt-4 mb-4"><i class="bi bi-upload"></i> Upload File</button>
+        </form>
+
+        <hr class="little mt-4 mb-4">
+
+        {#  Show list of all available S3 files #}
+        <h4 class="mb-3">These are your uploaded files</h4>
+        Click on the options to download or delete them.<br>
+        If you click on <i>copy markdown link</i> the link to that image which you can use in your markdown snippets will be copied to your clipboard<br><br>
+
+        {%  if space_used > 100 %}
+            <div class="alert alert-danger" role="alert">
+                Quota exceed. No more files can be uploaded!
+            </div>
+        {%  endif %}
+
+        {# Modal dialog window - edit currently selected file #}
+        <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit File Name</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('show_storage') }}" id="filename_change" method="POST">
+                            {{ file_rename_form.csrf_token }}
+                            <div class="form-group mt-2 mb-2">
+                                <label for="{{ file_rename_form.filename_new.name }}">{{ file_rename_form.filename_new.label }}</label>
+                                {{ file_rename_form.filename_new(size=20, class="form-control", onkeypress="return event.charCode != 32") }}
+                            </div>
+                            {{ file_rename_form.filename_old }}
+                            {%  if page_mode == "rename"  %}
+                                {% for error in file_rename_form.filename_new.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                            {%  endif %}
+                            {{ file_rename_form.page_mode(value="rename") }}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary mt-4 mb-4" form="filename_change"><i class="bi bi-check"></i> Confirm</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input class="form-control mb-3" id="myInput" type="text" aria-label="Search " placeholder="Search..">
+
+        <div class="card">
+            <div class="card-body">
+                You can upload image files as long as the quota doesn't get exceed.
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ space_used }}%" aria-valuenow="{{ space_used }}" aria-valuemin="0" aria-valuemax="100">{{ space_used_in_mb }} MB used ({{ space_used }}% of quota )</div>
+            </div>
+        </div>
+
+        <ul class="list-group" id="myList">
+            {% for item in contents %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('show_image', filename=item) }}" data-toggle="tooltip" title="View image"><i class="bi bi-eye me-2"></i></a>
+                    <a href="{{ url_for('do_download', filename=item) }}" data-toggle="tooltip" title="Download image"><i class="bi bi-download me-2 "></i></a>
+                    <a href="#" onclick="set_filename_field('{{ item }}');" data-toggle="tooltip" title="Rename image" data-bs-toggle="modal" data-bs-target="#myModal"><i class="bi bi-pencil me-2"></i></a>
+                    <a href="{{ url_for('do_delete', filename=item) }}" data-toggle="tooltip" title="Delete image"><i class="bi bi-trash me-2 "></i></a>
+                    <a href="#" onclick="CopyToClipboard('{{ item }}-html');return false;" data-toggle="tooltip" title="Copy HTML link"><i class="bi bi-link me-2"></i></a>
+                    {{ item }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% for item in contents %}
+            <div id="{{ item }}-html" style="font-size:0;">{{ www_server }}{{ url_for('show_image', filename=item) }}</div>
+        {% endfor %}
+    </div>
+{% endblock %}

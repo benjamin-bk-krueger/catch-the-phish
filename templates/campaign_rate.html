@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Campaign rating {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            See how you did here. If you would like additional information about the indicators, visit a specific scenario on the scenarios page.
+        </div>
+    </div>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show detailed information regarding the selected campaign #}
+        <div class="card mb-3" style="max-width: 720px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='img/phish_happy.png') }}" class="img-fluid rounded-start" alt="Rating Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                                Let's see your total score:
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Rating: {{ score_cand }} out of {{  score_target }}.
+                        </h6>
+                        <p class="card-text">
+                            You have found {{ ind_found }} of {{ ind_target }} additional indicators.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Display simple button - go back to the file overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <a href="{{ url_for('show_campaign', campaign_name=campaign.campaign_name) }}" class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-back"></i> Go Back
+        </a>
+    </div>
+{% endblock %}

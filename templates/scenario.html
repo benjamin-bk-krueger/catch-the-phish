@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} All Scenarios {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            You can view all available scenarios here. You must be a registered user to view non-public scenarios. Click on an entry to open a scenario.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable modal window error handling #}
+    {%  if page_mode == "modal"  %}
+        <script src="{{ url_for('static', filename='js/func_modal.js') }}"></script>
+    {%  endif %}
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show list of all scenarios #}
+        {% if scenarios | length == 0 %}
+            No entries found.<br>
+        {% else %}
+            {% for campaign in campaigns %}
+                <h4 class="mb-3">{{  campaign.campaign_name }}</h4>
+                <div class="list-group">
+                    {% for scenario in scenarios %}
+                        {%  if scenario.campaign_id == campaign.campaign_id %}
+                            <a href="{{ url_for('show_scenario', scenario_name=scenario.scenario_name)}}" class="list-group-item">{{ scenario.scenario_name }}
+                                {% for scenario_score in scenario_scores %}
+                                    {%  if scenario.scenario_id == scenario_score.scenario_id %}
+                                        <br><i>Score: {{ scenario_score.points }} points reached.</i>
+                                    {%  endif %}
+                                {% endfor %}
+                            </a>
+                        {%  endif %}
+                    {% endfor %}
+                </div>
+                <br>
+            {% endfor %}
+        {% endif %}
+
+        {% if current_user.student_role == "admin" %}
+            {# Modal dialog window - create a new scenario #}
+            <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Create Scenario</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{ url_for('show_scenarios_p') }}" method="POST" id="form_new">
+                                {{ scenario_form.csrf_token }}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.name.name }}">{{ scenario_form.name.label }}</label>
+                                    {{ scenario_form.name(size=20, class="form-control") }}
+                                </div>
+                               {% for error in scenario_form.name.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                               {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.description.name }}">{{ scenario_form.description.label }}</label>
+                                    {{ scenario_form.description(size=40, class="form-control") }}
+                                </div>
+                                {% for error in scenario_form.description.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.briefing.name }}">{{ scenario_form.briefing.label }}</label>
+                                    {{ scenario_form.briefing(size=40, class="form-control") }}
+                                </div>
+                                {% for error in scenario_form.briefing.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.image.name }}">{{ scenario_form.image.label }}</label>
+                                    {{ scenario_form.image(class="form-select") }}
+                                </div>
+                                {% for error in scenario_form.image.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                               <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.campaign.name }}">{{ scenario_form.campaign.label }}</label>
+                                    {{ scenario_form.campaign(class="form-select") }}
+                                </div>
+                               <div class="form-check mt-2 mb-2">
+                                    <label class="form-check-label" for="legitimate">{{ scenario_form.legitimate.label }}</label>
+                                    {{ scenario_form.legitimate(class="form-check-input") }}
+                                </div>
+                                {% for error in scenario_form.legitimate.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary mt-4 mb-4 btn-space" form="form_new"><i class="bi bi-check"></i> Create</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {#  Display action buttons regarding the selected item #}
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                {#  Same links implemented using small buttons #}
+                <div class="btn-group me-2" role="group" aria-label="Second group">
+                    <a href="#" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Create Scenario" data-bs-toggle="modal" data-bs-target="#myModal"><i class="bi bi-plus-square"></i> Create Scenario</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

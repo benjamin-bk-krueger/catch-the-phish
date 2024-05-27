@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} {{ scenario.scenario_name }} {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Find out more about this scenario here and click on Play Scenario to start it. Or return to the scenarios overview.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable modal window error handling #}
+    {%  if page_mode == "modal"  %}
+        <script src="{{ url_for('static', filename='js/func_modal.js') }}"></script>
+    {%  endif %}
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show detailed information regarding the selected scenario #}
+        <div class="card mb-3" style="max-width: 720px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('do_display', username=folder_name, filename=scenario.scenario_img) if (scenario.scenario_img!='NoImage') else url_for('static', filename='img/not_found.jpg') }}" class="img-fluid rounded-start" alt="Scenario Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Scenario information</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Assigned to <a href="{{ url_for('show_campaign', campaign_name=campaign.campaign_name)}}">{{ campaign.campaign_name }}</a></h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Entry created by <a href="{{ url_for('show_student', student_name=student.student_name)}}">{{ student.student_name }}</a></h6>
+                        {% if current_user.student_role == "admin" %}
+                            <p class="card-text">
+                                {%  if current_user.student_role == "admin" and scenario.legitimate== 1  %}
+                                    <span class="badge bg-secondary">Legitimate</span>
+                                {%  else %}
+                                    <span class="badge bg-secondary">Phishing</span>
+                                {%  endif %}
+                            </p>
+                        {%  endif %}
+                        <p class="card-text"><span style="white-space: pre-line">{{ scenario.scenario_desc }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.student_role == "admin" %}
+            {# Modal dialog window - delete currently selected scenario #}
+            <div id="myModal_del" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Delete Scenario</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('delete_scenario', scenario_name=scenario.scenario_name) }}" id="form_deletion">
+                                Are you sure?
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger mt-4 mb-4 btn-space" form="form_deletion"><i class="bi bi-check"></i> Confirm</button>
+                            <button type="button" class="btn btn-secondary mt-4 mb-4" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Modal dialog window - edit currently selected scenario #}
+            <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Scenario</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('show_scenario_p', scenario_name=scenario.scenario_name) }}" method="POST" id="form_edit">
+                                {{ scenario_form.csrf_token }}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.name.name }}">{{ scenario_form.name.label }}</label>
+                                    {{ scenario_form.name(size=20, class="form-control") }}
+                                </div>
+                                {% for error in scenario_form.name.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.description.name }}">{{ scenario_form.description.label }}</label>
+                                    {{ scenario_form.description(size=40, class="form-control") }}
+                                </div>
+                                {% for error in scenario_form.description.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.briefing.name }}">{{ scenario_form.briefing.label }}</label>
+                                    {{ scenario_form.briefing(size=40, class="form-control") }}
+                                </div>
+                                {% for error in scenario_form.briefing.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.image.name }}">{{ scenario_form.image.label }}</label>
+                                    {{ scenario_form.image(class="form-select") }}
+                                </div>
+                                {% for error in scenario_form.image.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ scenario_form.campaign.name }}">{{ scenario_form.campaign.label }}</label>
+                                    {{ scenario_form.campaign(class="form-select") }}
+                                </div>
+                               <div class="form-check mt-2 mb-2">
+                                    <label class="form-check-label" for="legitimate">{{ scenario_form.legitimate.label }}</label>
+                                    {{ scenario_form.legitimate(class="form-check-input") }}
+                                </div>
+                                {% for error in scenario_form.legitimate.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary mt-4 mb-4 btn-space" form="form_edit"><i class="bi bi-check"></i> Update</button>
+                            <button type="button" class="btn btn-secondary mt-4 mb-4" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {#  Display action buttons regarding the selected scenario #}
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+            {#  Same links implemented using small buttons #}
+            <div class="btn-group me-2" role="group" aria-label="Second group">
+                <a href="{{ url_for('show_scenarios') }}" data-toggle="tooltip" title="All Scenarios" class="btn btn-primary mt-4 mb-4"><i class="bi bi-list-ul"></i> All Scenarios</a>
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Third group">
+                {% if current_user.student_role == "admin" %}
+                    <a href="#" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Edit Scenario" data-bs-toggle="modal" data-bs-target="#myModal"><i class="bi bi-pencil"></i> Edit Scenario</a>
+                {% endif %}
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Fourth group">
+                {% if current_user.student_role == "admin" %}
+                    <a href="{{ url_for('show_areas', scenario_name=scenario.scenario_name) }}" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Edit Areas"><i class="bi bi-grid-1x2"></i> Edit Areas</a>
+                {% endif %}
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Fifth group">
+                <a href="{{ url_for('play_scenario', scenario_name=scenario.scenario_name) }}" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Play Scenario"><i class="bi bi-dice-5"></i> Play Scenario</a>
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Sixth group">
+                {% if current_user.student_role == "admin" %}
+                    <a href="#" class="btn btn-danger mt-4 mb-4" data-toggle="tooltip" title="Delete Scenario" data-bs-toggle="modal" data-bs-target="#myModal_del"><i class="bi bi-trash"></i> Delete Scenario</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

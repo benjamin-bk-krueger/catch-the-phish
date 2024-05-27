@@ -1,0 +1,941 @@
+{
+	"info": {
+		"_postman_id": "d330c747-6c2f-45b1-a20a-24ca72a8d18d",
+		"name": "Catch the Phish",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20357220"
+	},
+	"item": [
+		{
+			"name": "Campaigns",
+			"item": [
+				{
+					"name": "All Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/campaigns",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Campaign",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"campaign_desc\": \"Description\",\n    \"campaign_img\": \"\",\n    \"campaign_name\": \"Name\",\n    \"public_ind\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/campaigns",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"campaigns"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Campaign",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/campaigns/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Campaign",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"campaign_desc\": \"Description2\",\n    \"campaign_img\": \"\",\n    \"campaign_name\": \"Name\",\n    \"public_ind\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/campaigns/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Campaign",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/campaigns/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scenarios",
+			"item": [
+				{
+					"name": "All Scenarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/scenarios",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"scenarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Scenario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"campaign_id\": \"1\",\n    \"scenario_img\": \"\",\n    \"scenario_name\": \"Name\",\n    \"scenario_desc\": \"Description\",\n    \"scenario_brief\": \"Briefing\",\n    \"legitimate\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/scenarios",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"scenarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Scenario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/scenarios/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"scenarios",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Scenario",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"campaign_id\": \"1\",\n    \"scenario_img\": \"\",\n    \"scenario_name\": \"Name2\",\n    \"scenario_desc\": \"Description2\",\n    \"scenario_brief\": \"Briefing2\",\n    \"legitimate\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/scenarios/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"scenarios",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Scenario",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/scenarios/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"scenarios",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Areas",
+			"item": [
+				{
+					"name": "All Areas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/areas",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"areas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Area",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"scenario_id\": \"1\",\n    \"start_x\": \"10\",\n    \"start_y\": \"10\",\n    \"end_x\": \"20\",\n    \"end_y\": \"20\",\n    \"points\": \"0\",\n    \"hover\": \"text\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/areas",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"areas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Area",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/areas/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"areas",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Area",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"start_x\": \"10\",\n    \"start_y\": \"10\",\n    \"end_x\": \"20\",\n    \"end_y\": \"20\",\n    \"points\": \"5\",\n    \"hover\": \"other\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/areas/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"areas",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Area",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/areas/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"areas",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/categories",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_name\": \"Name\",\n    \"sample\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/categories",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/categories/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"category_name\": \"Name2\",\n    \"sample\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/categories/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/categories/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Language",
+			"item": [
+				{
+					"name": "All Languages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/languages",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Language",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"language_name\": \"Name\",\n    \"sample\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/languages",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"languages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Language",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/languages/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"languages",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Language",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"language_name\": \"Name2\",\n    \"sample\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/languages/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"languages",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Language",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/languages/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"languages",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lessons",
+			"item": [
+				{
+					"name": "All Lessons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/lessons",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"lessons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Lesson",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lesson_mov\": \"\",\n    \"lesson_name\": \"Name\",\n    \"lesson_cat\": 1,\n    \"lesson_lang\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/lessons",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"lessons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Lesson",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/lessons/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"lessons",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Lesson",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lesson_mov\": \"\",\n    \"lesson_name\": \"Name2\",\n    \"lesson_cat\": 1,\n    \"lesson_lang\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/lessons/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"lessons",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Lesson",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/lessons/{{name}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"lessons",
+								"{{name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quizzes",
+			"item": [
+				{
+					"name": "All Quizzes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/quizzes",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"quizzes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Quiz",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quiz_cat\": 1,\n    \"quiz_lang\": 1,\n    \"quiz_question\": \"Question\",\n    \"answer_first\": \"First answer\",\n    \"answer_second\": \"Second answer\",\n    \"answer_third\": \"Third answer\",\n    \"answer_fourth\": \"Fourth answer\",\n    \"quiz_solution\": 1,\n    \"points\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/quizzes",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"quizzes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Quiz",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/api/quizzes/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"quizzes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Quiz",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quiz_cat\": 1,\n    \"quiz_lang\": 1,\n    \"quiz_question\": \"Question2\",\n    \"answer_first\": \"First answer\",\n    \"answer_second\": \"Second answer\",\n    \"answer_third\": \"Third answer\",\n    \"answer_fourth\": \"Fourth answer\",\n    \"quiz_solution\": 1,\n    \"points\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/quizzes/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"quizzes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single Quiz",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseurl}}/api/quizzes/{{id}}",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"api",
+								"quizzes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

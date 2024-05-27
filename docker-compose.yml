@@ -1,0 +1,80 @@
+version: "3.7"
+
+services:
+  web:
+    image : benjaminkrueger/catch-the-phish
+    environment:
+      - POSTGRES_URL=phisher_database:5432
+      - POSTGRES_USER=phisher
+      - POSTGRES_PW=phisher
+      - POSTGRES_DB=phisher
+      - SECRET_KEY=secret-key-goes-here
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - S3_ENDPOINT=http://minio:9000
+      - S3_QUOTA=100
+      - S3_BUCKET=phisher
+      - S3_GLOBAL=GLOBAL
+      - WWW_SERVER=http://localhost:5030
+      - MAIL_ENABLE=0
+      - MAIL_SERVER=localhost
+      - MAIL_SENDER=mail@localhost
+      - MAIL_ADMIN=admin@localhost
+      - APP_VERSION=1.0
+      - APP_PREFIX=
+      - LOG_ENABLE=2
+      - LOG_FILE=phisher.log
+      - SITEMAP_DATE=2023-11-06
+    command: sh /home/phisher/flask.sh
+    user: phisher
+    ports:
+      - "127.0.0.1:5030:5030"
+    container_name: phisher_web
+    volumes:
+      - ./.aws/:/home/phisher/.aws/
+
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_USER=phisher
+      - POSTGRES_PASSWORD=phisher
+    ports:
+      - "127.0.0.1:5432:5432"
+    container_name: phisher_database
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+#      - ./db/phisher.dump:/tmp/phisher.dump
+
+  minio:
+    image: minio/minio
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9030:9030"
+    environment:
+      MINIO_ROOT_USER: minio_access_key
+      MINIO_ROOT_PASSWORD: minio_secret_key
+    container_name: phisher_s3
+    volumes:
+      - s3:/data
+    command: server --address ":9000" --console-address ":9030" /data
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    container_name: phisher_buckets
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add phisher http://minio:9000 minio_access_key minio_secret_key) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb phisher/phisher/;
+      echo EMPTY > empty.txt;
+      /usr/bin/mc cp empty.txt phisher/phisher/empty.txt;
+      exit 0;
+      "
+
+volumes:
+  db:
+    driver: local
+  s3:
+    driver: local

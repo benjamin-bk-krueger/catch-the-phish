@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Learning Lessons {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Here you can view all learning modules and quizzes. Click on an entry to start the unit. If you are a registered user, you can also save the scores you have achieved. Use the flags to limit the language.
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css"/>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show statistics about all stored elements in database #}
+        {% if lessons | length == 0 %}
+            No entries found.<br>
+        {% else %}
+            <h4 class="mb-3">Select language:
+                &nbsp;
+                <a href="{{ url_for('show_lessons', language=0) }}" class="fi fi-eu" style="text-decoration: none;"></a>
+                &nbsp;
+                {% for language in languages %}
+                    &nbsp;
+                    <a href="{{ url_for('show_lessons', language=language.language_id) }}" class="fi fi-{{ language.language_name }}" style="text-decoration: none;"></a>
+                    &nbsp;
+                {% endfor %}
+            </h4>
+            {% for category in categories %}
+                <h4 class="mb-3">{{  category.category_name }}</h4>
+                <div class="list-group">
+                    {% for lesson in lessons %}
+                        {%  if lesson.lesson_cat == category.category_id %}
+                            {% for language in languages %}
+                                {%  if lesson.lesson_lang == language.language_id %}
+                                    <a href="{{ url_for('show_lesson', language=language.language_id, lesson_name=lesson.lesson_name)}}" class="list-group-item"><i class="bi bi-film"></i> &nbsp;{{ lesson.lesson_name }} &nbsp;&nbsp;<span class="fi fi-{{ language.language_name }}"></span></a>
+                                {%  endif %}
+                            {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                    {% for quiz in quizzes %}
+                        {%  if quiz.quiz_cat == category.category_id %}
+                            {% for language in languages %}
+                                {%  if quiz.quiz_lang == language.language_id %}
+                                    <a href="{{ url_for('show_quiz', language=language.language_id, quiz_id=quiz.quiz_id)}}" class="list-group-item"><i class="bi bi-joystick"></i> &nbsp;Quiz &nbsp;&nbsp;<span class="fi fi-{{ language.language_name }}"></span>
+                                        {% for quiz_score in quiz_scores %}
+                                            {%  if quiz.quiz_id == quiz_score.quiz_id %}
+                                                <br><i>Score: {{ quiz_score.points }} out of {{  quiz.points }} points reached.</i>
+                                            {%  endif %}
+                                        {% endfor %}
+                                    </a>
+                                {%  endif %}
+                            {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                </div>
+                <br>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

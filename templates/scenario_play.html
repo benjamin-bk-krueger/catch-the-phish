@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Play scenario {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Decide whether it is phishing or a legitimate scenario. Find additional indicators (positive, negative) by clicking on them in the mail or scenario. This will give you additional points.
+        </div>
+    </div>
+
+    <style type="text/css">
+        .myimage {
+            position: relative;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+        }
+        {% for area in areas %}
+        .area-{{ area.area_id }} {
+            width: {{ area.end_x - area.start_x }}px;
+            height: {{ area.end_y - area.start_y }}px;
+            top: {{ area.start_y }}px;
+            left: {{ area.start_x }}px;
+            position: absolute;
+            opacity: 0.0;
+        }
+            {% if area.hover|length > 1 %}
+        .area-{{ area.area_id }}:hover {
+            opacity: 1.0;
+            background-color: white;
+        }
+            {% endif %}
+        {% endfor %}
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    {#  Enable area magic #}
+    <script src="{{ url_for('static', filename='js/func_set_resize.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/func_set_play.js') }}"></script>
+    <script>
+        init_play("{{ scenario.scenario_name }}");
+    </script>
+
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class='myimage'>
+            <a href="#" onclick="clickmaster(); return false;"><img src="{{ url_for('do_display', username=username, filename=filename) }}" alt="Uploaded Image" id="the_image" class="master"></a>
+            {% for area in areas %}
+                <a href="#" onclick="clickarea('{{ area.area_id }}', '{{ area.points }}'); return false;"><div class='area area-{{ area.area_id }}'>{{ area.hover }}</div></a>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    {# Display simple button - go back to the file overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        {% if counter == 0 %}
+        <a href="#" onclick='clickrating(1); window.location ="{{ url_for('rate_scenario', scenario_name=scenario.scenario_name) }}";' class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-emoji-smile"></i> This is Legitimate
+        </a>
+
+        <a href="#" onclick='clickrating(0); window.location ="{{ url_for('rate_scenario', scenario_name=scenario.scenario_name) }}";' class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-emoji-angry"></i> This is Phishing
+        </a>
+        {% else %}
+        <a href="#" onclick='clickrating(1); window.location ="{{ url_for('play_campaign', campaign_name=campaign.campaign_name, counter=counter) }}";' class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-emoji-smile"></i> This is Legitimate
+        </a>
+
+        <a href="#" onclick='clickrating(0); window.location ="{{ url_for('play_campaign', campaign_name=campaign.campaign_name, counter=counter) }}";' class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-emoji-angry"></i> This is Phishing
+        </a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+site_name: Catch the Phish
+site_url: https://www.catch-the-phish.com/static/doc/
+site_dir: ./static/doc
+use_directory_urls: false
+nav:
+    - Home: index.md
+    - Account: account.md
+    - Storage: storage.md
+    - Lessons: lessons.md
+    - Students: students.md
+    - Campaigns: campaigns.md
+    - Scenarios: scenarios.md
+    - Stats: stats.md
+    - REST API: restapi.md
+    - Exit Help: 'https://www.catch-the-phish.com/web'
+theme: readthedocs
+markdown_extensions:
+  - tables

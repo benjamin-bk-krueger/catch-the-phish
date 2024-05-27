@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Quiz {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Choose the correct answer.
+        </div>
+    </div>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/quiz.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    {#  Enable quiz magic #}
+    <script src="{{ url_for('static', filename='js/func_set_quiz.js') }}"></script>
+    <script>
+        init_play("{{ quiz.quiz_id }}");
+    </script>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="modal-header">
+            <h3>{{ quiz.quiz_question }}</h3>
+        </div>
+        <div class="modal-body">
+            <div class="col-xs-3 5"></div>
+            <div class="quiz" id="quiz" data-toggle="buttons">
+                <a href="#" onclick='clickanswer(1); window.location ="{{ url_for('rate_quiz', language=session['language'], quiz_id=quiz.quiz_id) }}";'><label class="element-animation1 btn btn-lg btn-light btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1"> {{ quiz.answer_first }}</label></a><br><br>
+                <a href="#" onclick='clickanswer(2); window.location ="{{ url_for('rate_quiz', language=session['language'], quiz_id=quiz.quiz_id) }}";'><label class="element-animation2 btn btn-lg btn-light btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="2"> {{ quiz.answer_second }}</label></a><br><br>
+                <a href="#" onclick='clickanswer(3); window.location ="{{ url_for('rate_quiz', language=session['language'], quiz_id=quiz.quiz_id) }}";'><label class="element-animation3 btn btn-lg btn-light btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="3"> {{ quiz.answer_third }}</label></a><br><br>
+                <a href="#" onclick='clickanswer(4); window.location ="{{ url_for('rate_quiz', language=session['language'], quiz_id=quiz.quiz_id) }}";'><label class="element-animation4 btn btn-lg btn-light btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="4"> {{ quiz.answer_fourth }}</label></a><br><br>
+            </div>
+        </div>
+    </div>
+
+    {# Display simple button - go back to the module overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <a href="{{ url_for('show_lessons', language=session['language']) }}" class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-list-ul"></i> All Lessons
+        </a>
+    </div>
+{% endblock %}

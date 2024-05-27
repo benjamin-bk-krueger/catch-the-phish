@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Edit image areas {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Edit the indicators of a scenario here. In addition, you can enter points that are awarded when an indicator is found and a hover text that is displayed when the mouse pointer is held over the indicator.
+        </div>
+    </div>
+
+    <style type="text/css">
+        .myimage {
+            position: relative;
+        }
+        img {
+            width: 100%;
+            height: 100%;
+        }
+        {% for area in areas %}
+        .area-{{ area.area_id }} {
+            width: {{ area.end_x - area.start_x }}px;
+            height: {{ area.end_y - area.start_y }}px;
+            border: 1px solid black;
+            top: {{ area.start_y }}px;
+            left: {{ area.start_x }}px;
+            position: absolute;
+            opacity: 0.5;
+            background-color: red;
+        }
+        {% endfor %}
+        .coveringCanvas {
+            width:100%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            left:0px;
+            cursor: crosshair;
+          }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable area magic #}
+    <script src="{{ url_for('static', filename='js/func_set_area.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/func_set_resize.js') }}"></script>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class='myimage'>
+            <img src="{{ url_for('do_display', username=username, filename=filename) }}" alt="Uploaded Image" id="the_image" class="master">
+            {% for area in areas %}
+            <div class='area area-{{ area.area_id }}'>area-{{ area.area_id }}: {{ area.hover }}</div>
+            {% endfor %}
+            <canvas class="coveringCanvas" id="c1" ></canvas>
+        </div>
+    </div>
+
+    <div class="container-md pb-3 mt-2 mb-2">
+        <h4 class="mb-3">Create a new area</h4>
+        <form action="#" method="POST" id="form_add">
+            {{ area_form.csrf_token }}
+            <div id="coords">0,0-0,0</div>
+            <div class="form-group mt-2 mb-2" hidden>
+                <label for="{{ area_form.start_x.name }}">{{ area_form.start_x.label }}</label>
+                {{ area_form.start_x(size=10, class="form-control", onkeypress="return event.charCode != 32") }}
+            </div>
+            {% for error in area_form.start_x.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+            <div class="form-group mt-2 mb-2" hidden>
+                <label for="{{ area_form.start_y.name }}">{{ area_form.start_y.label }}</label>
+                {{ area_form.start_y(size=10, class="form-control", onkeypress="return event.charCode != 32") }}
+            </div>
+            {% for error in area_form.start_y.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+            <div class="form-group mt-2 mb-2" hidden>
+                <label for="{{ area_form.end_x.name }}">{{ area_form.end_x.label }}</label>
+                {{ area_form.end_x(size=10, class="form-control", onkeypress="return event.charCode != 32") }}
+            </div>
+            {% for error in area_form.end_x.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+            <div class="form-group mt-2 mb-2" hidden>
+                <label for="{{ area_form.end_y.name }}">{{ area_form.end_y.label }}</label>
+                {{ area_form.end_y(size=10, class="form-control", onkeypress="return event.charCode != 32") }}
+            </div>
+            {% for error in area_form.end_y.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+            <div class="form-group mt-2 mb-2">
+                <label for="{{ area_form.points.name }}">{{ area_form.points.label }}</label>: <label id="points_number">0</label> Points
+                {{ area_form.points(class="form-control", oninput="document.getElementById('points_number').innerHTML  = document.getElementById('points').value ") }}
+            </div>
+            {% for error in area_form.points.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+            <div class="form-group mt-2 mb-2">
+                <label for="{{ area_form.hover.name }}">{{ area_form.hover.label }}</label>
+                {{ area_form.hover(size=20, class="form-control") }}
+            </div>
+            {% for error in area_form.hover.errors %}
+                <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+            {% endfor %}
+        </form>
+        <button type="submit" class="btn btn-primary mt-4 mb-4 btn-space" form="form_add"><i class="bi bi-plus-square"></i> Add Area</button>
+
+
+        <h4 class="mb-3">These are your existing areas</h4>
+        <ul class="list-group" id="myList">
+            {% for area in areas %}
+                <li class="list-group-item">
+                    area-{{ area.area_id }}: {{ area.start_x }}, {{ area.start_y }} - {{ area.end_x }}, {{ area.end_y }} ({{ area.points }} Points) {{ area.hover }} <a href="{{ url_for('delete_area', area_id=area.area_id) }}" data-toggle="tooltip" title="Delete area"><i class="bi bi-trash me-2 "></i></a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {# Display simple button - go back to the file overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <a href="{{ url_for('show_scenario', scenario_name=scenario.scenario_name) }}" class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-back"></i> Go Back
+        </a>
+    </div>
+{% endblock %}

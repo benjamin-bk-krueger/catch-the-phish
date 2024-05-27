@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Scenario rating {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            See how you did here. If you would like additional information about the indicators, click on Show Hints.
+        </div>
+    </div>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show detailed information regarding the selected campaign #}
+        <div class="card mb-3" style="max-width: 720px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="
+                    {% if scenario.legitimate == legitimate and scenario.legitimate == 1 %}
+                        {{ url_for('static', filename='img/human_happy.png') }}
+                    {% elif scenario.legitimate == legitimate and scenario.legitimate == 0  %}
+                        {{ url_for('static', filename='img/phish_happy.png') }}
+                    {% elif scenario.legitimate != legitimate and scenario.legitimate == 1  %}
+                        {{ url_for('static', filename='img/human_angry.png') }}
+                    {% elif scenario.legitimate != legitimate and scenario.legitimate == 0  %}
+                        {{ url_for('static', filename='img/phish_angry.png') }}
+                    {% else %}
+                        {{ url_for('static', filename='img/victor.png') }}
+                    {% endif %}
+                    " class="img-fluid rounded-start" alt="Rating Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {% if scenario.legitimate == legitimate and scenario.legitimate == 1 %}
+                                Hooray! This was a legitimate scenario. You're rating was correct.
+                            {% elif scenario.legitimate == legitimate and scenario.legitimate == 0  %}
+                                Hooray! This was a phishing scenario. You're rating was correct.
+                            {% elif scenario.legitimate != legitimate and scenario.legitimate == 1  %}
+                                Oops. This was a legitimate scenario.
+                            {% elif scenario.legitimate != legitimate and scenario.legitimate == 0  %}
+                                Oops. This was a phishing scenario.
+                            {% else %}
+                                Oops. This shouldn't happen.
+                            {% endif %}
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Rating: {{ score_cand }} out of {{  score_target }}.
+                        </h6>
+                        <p class="card-text">
+                            You have found {{ ind_found }} of {{ ind_target }} additional indicators.
+                        </p>
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>
+          <a class="btn btn-warning" data-bs-toggle="collapse" href="#showHints" role="button" aria-expanded="false" aria-controls="showHints">
+            <i class="bi bi-lightbulb"></i> Show Hints
+          </a>
+        </p>
+        <div class="collapse" id="showHints">
+          <div class="card card-body">
+            <span style="white-space: pre-line">{{ scenario.scenario_brief }}</span>
+          </div>
+        </div>
+    </div>
+
+    {# Display simple button - go back to the scenario overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <a href="{{ url_for('show_scenario', scenario_name=scenario.scenario_name) }}" class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-back"></i> Go Back
+        </a>
+    </div>
+{% endblock %}

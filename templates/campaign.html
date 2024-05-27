@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} All Campaigns {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            You can view all available campaigns here. You must be a registered user to view non-public campaigns. Click on an entry to open a campaign.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable modal window error handling #}
+    {%  if page_mode == "modal"  %}
+        <script src="{{ url_for('static', filename='js/func_modal.js') }}"></script>
+    {%  endif %}
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show list of all campaigns #}
+        {% if campaigns | length == 0 %}
+            No entries found.<br>
+        {% else %}
+            <div class="list-group">
+                {% for campaign in campaigns %}
+                    <a href="{{ url_for('show_campaign', campaign_name=campaign.campaign_name)}}" class="list-group-item">{{ campaign.campaign_name }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if current_user.student_role == "admin" %}
+            {# Modal dialog window - create a new campaign #}
+            <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Create Campaign</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{ url_for('show_campaigns_p') }}" method="POST" id="form_new">
+                                {{ campaign_form.csrf_token }}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.name.name }}">{{ campaign_form.name.label }}</label>
+                                    {{ campaign_form.name(size=20, class="form-control") }}
+                                </div>
+                               {% for error in campaign_form.name.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                               {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.description.name }}">{{ campaign_form.description.label }}</label>
+                                    {{ campaign_form.description(size=40, class="form-control") }}
+                                </div>
+                                {% for error in campaign_form.description.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.image.name }}">{{ campaign_form.image.label }}</label>
+                                    {{ campaign_form.image(class="form-select") }}
+                                </div>
+                                {% for error in campaign_form.image.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-check mt-2 mb-2">
+                                    <label class="form-check-label" for="public">{{ campaign_form.public.label }}</label>
+                                    {{ campaign_form.public(class="form-check-input") }}
+                                </div>
+                                {% for error in campaign_form.public.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary mt-4 mb-4 btn-space" form="form_new"><i class="bi bi-check"></i> Create</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {#  Display action buttons regarding the selected item #}
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                {#  Same links implemented using small buttons #}
+                <div class="btn-group me-2" role="group" aria-label="Second group">
+                    <a href="#" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Create Campaign" data-bs-toggle="modal" data-bs-target="#myModal"><i class="bi bi-plus-square"></i> Create Campaign</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

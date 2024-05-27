@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} Learning Lesson: {{ lesson.lesson_name }} {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Use the media player controls to pause a video, jump to a specific location or switch to full screen.
+        </div>
+    </div>
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        <div class="embed-responsive embed-responsive-16by9">
+            <video autoplay width="640" height="480" controls>
+                <source src="{{ lesson.lesson_mov }}" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    {# Display simple button - go back to the module overview page #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <a href="{{ url_for('show_lessons', language=session['language']) }}" class="btn btn-primary mt-4 mb-4">
+            <i class="bi bi-list-ul"></i> All Lessons
+        </a>
+    </div>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {#  Page header #}
+    <div class="container-md pb-2 mt-4 mb-2">
+        <h2>{% block title %} {{ campaign.campaign_name }} {% endblock %}</h2>
+    </div>
+
+    {#  Page information #}
+    <div class="container-md pb-3 mt-2 mb-2">
+        <div class="bg-secondary text-white"><i class="bi bi-exclamation-circle"></i>&nbsp;
+            Find out more about this campaign here and click on Play Campaign to start it. Or return to the campaigns overview.
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    {#  Enable modal window error handling #}
+    {%  if page_mode == "modal"  %}
+        <script src="{{ url_for('static', filename='js/func_modal.js') }}"></script>
+    {%  endif %}
+
+    {#  Page content #}
+    <div class="container-md pb-3 mt-2 mb-2">
+
+        {#  Show detailed information regarding the selected campaign #}
+        <div class="card mb-3" style="max-width: 720px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ url_for('do_display', username=folder_name, filename=campaign.campaign_img) if (campaign.campaign_img!='NoImage') else url_for('static', filename='img/not_found.jpg') }}" class="img-fluid rounded-start" alt="Campaign Image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Campaign information</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Entry created by <a href="{{ url_for('show_student', student_name=student.student_name)}}">{{ student.student_name }}</a></h6>
+                        <p class="card-text">
+                            {%  if campaign.public_ind == 1  %}
+                                <span class="badge bg-secondary">Public</span>
+                            {%  else %}
+                                <span class="badge bg-secondary">Closed</span>
+                            {%  endif %}
+                        </p>
+                        <p class="card-text"><span style="white-space: pre-line">{{ campaign.campaign_desc }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.student_role == "admin" %}
+            {# Modal dialog window - delete currently selected campaign #}
+            <div id="myModal_del" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Delete Campaign</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('delete_campaign', campaign_name=campaign.campaign_name) }}" id="form_deletion">
+                                Are you sure?
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger mt-4 mb-4 btn-space" form="form_deletion"><i class="bi bi-check"></i> Confirm</button>
+                            <button type="button" class="btn btn-secondary mt-4 mb-4" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Modal dialog window - edit currently selected campaign #}
+            <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Campaign</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('show_campaign_p', campaign_name=campaign.campaign_name) }}" method="POST" id="form_edit">
+                                {{ campaign_form.csrf_token }}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.name.name }}">{{ campaign_form.name.label }}</label>
+                                    {{ campaign_form.name(size=20, class="form-control") }}
+                                </div>
+                                {% for error in campaign_form.name.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.description.name }}">{{ campaign_form.description.label }}</label>
+                                    {{ campaign_form.description(size=40, class="form-control") }}
+                                </div>
+                                {% for error in campaign_form.description.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-group mt-2 mb-2">
+                                    <label for="{{ campaign_form.image.name }}">{{ campaign_form.image.label }}</label>
+                                    {{ campaign_form.image(class="form-select") }}
+                                </div>
+                                {% for error in campaign_form.image.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                                <div class="form-check mt-2 mb-2">
+                                    <label class="form-check-label" for="public">{{ campaign_form.public.label }}</label>
+                                    {{ campaign_form.public(class="form-check-input") }}
+                                </div>
+                                {% for error in campaign_form.public.errors %}
+                                    <div class="alert alert-warning"><strong>Warning!</strong> {{ error }}</div>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary mt-4 mb-4 btn-space" form="form_edit"><i class="bi bi-check"></i> Update</button>
+                            <button type="button" class="btn btn-secondary mt-4 mb-4" data-bs-dismiss="modal"><i class="bi bi-x"></i> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+        {#  Display dropdowns containing links to all depending elements #}
+        <div class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                Available Scenarios
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">Click on an item to open scenario</a></li>
+                <li><hr class="dropdown-divider"></li>
+                {% for scenario in scenarios %}
+                    <li><a class="dropdown-item" href="{{ url_for('show_scenario', scenario_name=scenario.scenario_name)}}">{{ scenario.scenario_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+
+        {#  Display action buttons regarding the selected campaign #}
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+            {#  Same links implemented using small buttons #}
+            <div class="btn-group me-2" role="group" aria-label="Second group">
+                <a href="{{ url_for('show_campaigns') }}" data-toggle="tooltip" title="All Campaigns" class="btn btn-primary mt-4 mb-4"><i class="bi bi-list-ul"></i> All Campaigns</a>
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Third group">
+                {% if current_user.student_role == "admin" %}
+                    <a href="#" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Edit Campaign" data-bs-toggle="modal" data-bs-target="#myModal"><i class="bi bi-pencil"></i> Edit Campaign</a>
+                {% endif %}
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Fourth group">
+                <a href="{{ url_for('play_campaign', campaign_name=campaign.campaign_name, counter=0) }}" class="btn btn-primary mt-4 mb-4" data-toggle="tooltip" title="Play Campaign"><i class="bi bi-dice-5"></i> Play Campaign</a>
+            </div>
+            <div class="btn-group me-2" role="group" aria-label="Fifth group">
+                {% if current_user.student_role == "admin" %}
+                    <a href="#" class="btn btn-danger mt-4 mb-4" data-toggle="tooltip" title="Delete Campaign" data-bs-toggle="modal" data-bs-target="#myModal_del"><i class="bi bi-trash"></i> Delete Campaign</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
